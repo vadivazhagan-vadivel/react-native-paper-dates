@@ -279,11 +279,18 @@ function App() {
           <View style={[StyleSheet.absoluteFill, styles.customModal]}>
             <DatePickerModalContent
               locale={locale}
-              mode="range"
+              mode="single"
               onDismiss={onDismissCustom}
               startDate={range.startDate}
               endDate={range.endDate}
               onConfirm={onChangeRange}
+              themeValue={{
+                secondaryColor: '#fff',
+                primaryColor: '#1060e0',
+                accentColor: '#070707',
+                backgroundColor: '#ECE9E1',
+                fontFamily: 'Roboto',
+              }}
             />
           </View>
         ) : null}

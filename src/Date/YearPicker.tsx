@@ -2,6 +2,7 @@ import * as React from 'react'
 import { FlatList, StyleSheet, View } from 'react-native'
 import { MD2Theme, Text, TouchableRipple, useTheme } from 'react-native-paper'
 import { range } from '../utils'
+import { themeContext } from '../Context/themeContext'
 
 const ITEM_HEIGHT = 62
 
@@ -74,6 +75,12 @@ function YearPure({
   onPressYear: (newYear: number) => any
 }) {
   const theme = useTheme()
+  const LocalTheme = React.useContext(themeContext)
+
+  const backgroundColor = LocalTheme.accentColor
+  const textColor = selected
+    ? LocalTheme.secondaryColor
+    : LocalTheme.accentColor
 
   let textFont = theme?.isV3
     ? theme.fonts.bodyLarge
@@ -90,22 +97,11 @@ function YearPure({
         <View
           style={[
             styles.yearInner,
-            selected ? { backgroundColor: theme.colors.primary } : null,
+            selected ? { backgroundColor: backgroundColor } : null,
           ]}
         >
           <Text
-            style={[
-              styles.yearLabel,
-              selected
-                ? // eslint-disable-next-line react-native/no-inline-styles
-                  { color: theme.isV3 ? theme.colors.onPrimary : '#fff' }
-                : {
-                    color: theme.isV3
-                      ? theme.colors.onSurfaceVariant
-                      : undefined,
-                  },
-              { ...textFont },
-            ]}
+            style={[styles.yearLabel, { color: textColor }, { ...textFont }]}
             selectable={false}
           >
             {year}

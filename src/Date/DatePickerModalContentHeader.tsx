@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { View, StyleSheet } from 'react-native'
-import { IconButton, MD2Theme, Text, useTheme } from 'react-native-paper'
+import { Text, useTheme } from 'react-native-paper'
 import type { ModeType } from './Calendar'
 import type { LocalState } from './DatePickerModalContent'
-import { useHeaderTextColor } from '../utils'
 import Color from 'color'
 import { getTranslation } from '../translations/utils'
+import { themeContext } from '../Context/themeContext'
 
 export interface HeaderPickProps {
   moreLabel?: string
@@ -52,32 +52,23 @@ function getLabel(
 export default function DatePickerModalContentHeader(
   props: HeaderContentProps
 ) {
-  const {
-    onToggle,
-    collapsed,
-    mode,
-    moreLabel,
-    uppercase,
-    editIcon,
-    calendarIcon,
-  } = props
-  const theme = useTheme()
+  const { mode, moreLabel, uppercase } = props
   const label = getLabel(props.locale, props.mode, props.label)
 
-  const color = useHeaderTextColor()
-  const supportingTextColor = theme.isV3 ? theme.colors.onSurfaceVariant : color
-  const allowEditing = mode !== 'multiple'
+  const LocalTheme = React.useContext(themeContext)
 
-  let textFont = theme?.isV3
-    ? theme.fonts.labelMedium
-    : (theme as any as MD2Theme).fonts.medium
+  const color = LocalTheme.secondaryColor
+  const labelColor = LocalTheme.secondaryColor
+
+  // adjust font
+  let textFont = {
+    fontFamily: LocalTheme.fontFamily,
+  }
 
   return (
     <View style={styles.header}>
       <View>
-        <Text
-          style={[styles.label, { color: supportingTextColor, ...textFont }]}
-        >
+        <Text style={[styles.label, { color: labelColor, ...textFont }]}>
           {uppercase ? label.toUpperCase() : label}
         </Text>
         <View style={styles.headerContentContainer}>
@@ -96,27 +87,6 @@ export default function DatePickerModalContentHeader(
           ) : null}
         </View>
       </View>
-      <View style={styles.fill} />
-      {allowEditing ? (
-        <IconButton
-          icon={
-            collapsed
-              ? editIcon ?? theme.isV3
-                ? 'pencil-outline'
-                : 'pencil'
-              : calendarIcon ?? theme.isV3
-              ? 'calendar-blank'
-              : 'calendar'
-          }
-          accessibilityLabel={
-            collapsed
-              ? getTranslation(props.locale, 'typeInDate')
-              : getTranslation(props.locale, 'pickDateFromCalendar')
-          }
-          iconColor={theme.isV3 ? theme.colors.onSurface : color}
-          onPress={onToggle}
-        />
-      ) : null}
     </View>
   )
 }
@@ -124,16 +94,10 @@ export default function DatePickerModalContentHeader(
 export function HeaderContentSingle({
   state,
   emptyLabel = ' ',
-  color,
   locale,
+  color,
 }: HeaderContentProps & { color: string }) {
-  const theme = useTheme()
-  const lighterColor = Color(color).fade(0.5).rgb().toString()
-  const dateColor = state.date
-    ? theme.isV3
-      ? theme.colors.onSurface
-      : color
-    : lighterColor
+  const dateColor = color
 
   const formatter = React.useMemo(() => {
     return new Intl.DateTimeFormat(locale, {

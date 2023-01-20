@@ -34,7 +34,8 @@ import type {
   ValidRangeType,
 } from './Calendar'
 import { dayNamesHeight } from './DayNames'
-import { useTextColorOnPrimary } from '../utils'
+
+import { themeContext } from '../Context/themeContext'
 
 interface BaseMonthProps {
   locale: undefined | string
@@ -45,8 +46,6 @@ interface BaseMonthProps {
   onPressYear: (year: number) => any
   selectingYear: boolean
   onPressDate: (date: Date) => any
-  primaryColor: string
-  selectColor: string
   roundness: number
   validRange?: ValidRangeType
 
@@ -85,15 +84,19 @@ function Month(props: MonthSingleProps | MonthRangeProps | MonthMultiProps) {
     selectingYear,
     onPressDate,
     scrollMode,
-    primaryColor,
-    selectColor,
     roundness,
     disableWeekDays,
     locale,
     validRange,
   } = props
-  const theme = useTheme()
-  const textColorOnPrimary = useTextColorOnPrimary()
+
+  const LocalTheme = React.useContext(themeContext)
+
+  const monthYearLabelTextColor = LocalTheme.accentColor
+  let textFont = {
+    fontFamily: LocalTheme.fontFamily,
+  }
+
   const realIndex = getRealIndex(index)
   const isHorizontal = scrollMode === 'horizontal'
   const { isDisabled, isWithinValidRange } = useRangeChecker(validRange)
@@ -250,10 +253,6 @@ function Month(props: MonthSingleProps | MonthRangeProps | MonthMultiProps) {
     date,
   ])
 
-  let textFont = theme?.isV3
-    ? theme.fonts.titleSmall
-    : (theme as any as MD2Theme).fonts.medium
-
   return (
     <View style={[styles.month, { height: getMonthHeight(scrollMode, index) }]}>
       <View
@@ -292,9 +291,7 @@ function Month(props: MonthSingleProps | MonthRangeProps | MonthMultiProps) {
                 styles.monthLabel,
                 {
                   ...textFont,
-                  color: theme.isV3
-                    ? theme.colors.onSurfaceVariant
-                    : theme.colors.onSurface,
+                  color: monthYearLabelTextColor,
                 },
               ]}
               selectable={false}
@@ -304,15 +301,7 @@ function Month(props: MonthSingleProps | MonthRangeProps | MonthMultiProps) {
             <View style={isHorizontal ? styles.opacity1 : styles.opacity0}>
               <IconButton
                 onPress={isHorizontal ? () => onPressYear(year) : undefined}
-                icon={
-                  selectingYear
-                    ? theme.isV3
-                      ? 'menu-up'
-                      : 'chevron-up'
-                    : theme.isV3
-                    ? 'menu-down'
-                    : 'chevron-down'
-                }
+                icon={selectingYear ? 'chevron-up' : 'chevron-down'}
               />
             </View>
           </View>
@@ -328,7 +317,6 @@ function Month(props: MonthSingleProps | MonthRangeProps | MonthMultiProps) {
               ) : (
                 <Day
                   key={gd.dayIndex}
-                  theme={theme}
                   day={gd.dayOfMonth}
                   month={gd.month}
                   year={gd.year}
@@ -338,10 +326,7 @@ function Month(props: MonthSingleProps | MonthRangeProps | MonthMultiProps) {
                   rightCrop={gd.rightCrop}
                   onPressDate={onPressDate}
                   isToday={gd.isToday}
-                  selectColor={selectColor}
-                  primaryColor={primaryColor}
                   disabled={gd.disabled}
-                  textColorOnPrimary={textColorOnPrimary}
                 />
               )
             )}

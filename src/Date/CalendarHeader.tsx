@@ -34,18 +34,17 @@ function CalendarHeader({
   onNext: () => any
   disableWeekDays?: DisableWeekDaysType
 }) {
-  const theme = useTheme()
   const isHorizontal = scrollMode === 'horizontal'
+
+  const backgroundColor = '#fff'
+
   return (
     <View style={styles.datePickerHeader} pointerEvents={'box-none'}>
       {isHorizontal ? (
         <View style={styles.buttonContainer} pointerEvents={'box-none'}>
           <View style={styles.spacer} pointerEvents={'box-none'} />
           <View
-            style={[
-              styles.buttonWrapper,
-              { backgroundColor: theme.colors.surface },
-            ]}
+            style={[styles.buttonWrapper, { backgroundColor: backgroundColor }]}
           >
             <IconButton
               icon="chevron-left"
@@ -54,10 +53,7 @@ function CalendarHeader({
             />
           </View>
           <View
-            style={[
-              styles.buttonWrapper,
-              { backgroundColor: theme.colors.surface },
-            ]}
+            style={[styles.buttonWrapper, { backgroundColor: backgroundColor }]}
           >
             <IconButton
               icon="chevron-right"

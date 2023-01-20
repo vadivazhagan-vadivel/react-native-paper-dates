@@ -11,11 +11,10 @@ import {
 } from './dateUtils'
 
 import CalendarHeader from './CalendarHeader'
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import YearPicker from './YearPicker'
-import Color from 'color'
 import { useTheme } from 'react-native-paper'
-import { useLatest, lightenBy, darkenBy } from '../utils'
+import { useLatest } from '../utils'
 
 export type ModeType = 'single' | 'range' | 'multiple'
 
@@ -98,17 +97,6 @@ function Calendar(
   } = props
 
   const theme = useTheme()
-
-  const selectColor = useMemo<string>(() => {
-    if (theme.isV3) {
-      return theme.colors.primaryContainer
-    }
-    if (theme.dark) {
-      return darkenBy(Color(theme.colors.primary), 0.1).hex()
-    }
-    return lightenBy(Color(theme.colors.primary), 0.9).hex()
-  }, [theme])
-
   const scrollMode =
     mode === 'range' || mode === 'multiple' ? 'vertical' : 'horizontal'
 
@@ -192,8 +180,6 @@ function Calendar(
             selectingYear={selectingYear}
             onPressDate={onPressDate}
             scrollMode={scrollMode}
-            primaryColor={theme.colors.primary}
-            selectColor={selectColor}
             roundness={theme.roundness}
             disableWeekDays={disableWeekDays}
           />

@@ -1,10 +1,9 @@
 import * as React from 'react'
-import { MD2Theme, Text, TouchableRipple } from 'react-native-paper'
+import { Text, TouchableRipple } from 'react-native-paper'
 import { StyleSheet, View } from 'react-native'
 import DayRange from './DayRange'
 import { daySize } from './dateUtils'
-
-import type { PaperTheme } from '../utils'
+import { themeContext } from '../Context/themeContext'
 
 function EmptyDayPure() {
   return <View style={styles.empty} />
@@ -12,8 +11,6 @@ function EmptyDayPure() {
 export const EmptyDay = React.memo(EmptyDayPure)
 
 function Day(props: {
-  theme: PaperTheme
-  textColorOnPrimary: string
   day: number
   month: number
   year: number
@@ -21,8 +18,6 @@ function Day(props: {
   inRange: boolean
   leftCrop: boolean
   rightCrop: boolean
-  primaryColor: string
-  selectColor: string
   isToday: boolean
   disabled: boolean
   onPressDate: (date: Date) => any
@@ -36,39 +31,21 @@ function Day(props: {
     leftCrop,
     rightCrop,
     onPressDate,
-    primaryColor,
-    selectColor,
     isToday,
     disabled,
-    textColorOnPrimary,
-    theme,
   } = props
   const onPress = React.useCallback(() => {
     onPressDate(new Date(year, month, day))
   }, [onPressDate, year, month, day])
 
-  const borderColor = theme.isV3
-    ? theme.colors.primary
-    : selected || (inRange && theme.dark)
-    ? textColorOnPrimary
-    : theme.dark
-    ? '#fff'
-    : '#000'
+  const LocalTheme = React.useContext(themeContext)
+  const borderColor = LocalTheme.accentColor
+  const selectedColor = LocalTheme.accentColor
+  const textColor = selected
+    ? LocalTheme.secondaryColor
+    : LocalTheme.accentColor
 
-  const textColor =
-    theme.isV3 && selected
-      ? theme.colors.onPrimary
-      : theme.isV3 && inRange && theme.dark
-      ? theme.colors.onPrimaryContainer
-      : selected || (inRange && theme.dark)
-      ? textColorOnPrimary
-      : theme.isV3
-      ? theme.colors.onSurface
-      : undefined
-
-  let textFont = theme?.isV3
-    ? theme.fonts.bodySmall
-    : (theme as any as MD2Theme).fonts.medium
+  let textFont = { fontFamily: LocalTheme.fontFamily }
 
   return (
     <View style={[styles.root, disabled && styles.disabled]}>
@@ -76,7 +53,7 @@ function Day(props: {
         inRange={inRange}
         leftCrop={leftCrop}
         rightCrop={rightCrop}
-        selectColor={selectColor}
+        selectColor={selectedColor}
       />
       <TouchableRipple
         testID={`react-native-paper-dates-day-${year}-${month}-${day}`}
@@ -85,7 +62,7 @@ function Day(props: {
         onPress={disabled ? undefined : onPress}
         style={[
           styles.button,
-          { backgroundColor: inRange ? selectColor : undefined },
+          { backgroundColor: inRange ? selectedColor : undefined },
         ]}
         accessibilityRole="button"
       >
@@ -93,19 +70,14 @@ function Day(props: {
           style={[
             styles.day,
             isToday ? { borderColor: borderColor } : null,
-            selected ? { backgroundColor: primaryColor } : null,
+            selected ? { backgroundColor: selectedColor } : null,
           ]}
         >
           <Text
             style={[
               textColor
                 ? {
-                    color:
-                      theme.isV3 && isToday && selected
-                        ? textColor
-                        : theme.isV3 && isToday
-                        ? theme.colors.primary
-                        : textColor,
+                    color: textColor,
                   }
                 : undefined,
               { ...textFont },

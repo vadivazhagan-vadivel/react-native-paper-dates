@@ -18,6 +18,8 @@ import DatePickerModalContentHeader, {
 import CalendarEdit from './CalendarEdit'
 import DatePickerModalHeaderBackground from './DatePickerModalHeaderBackground'
 
+import { themeContext } from '../Context/themeContext'
+
 export type LocalState = {
   startDate: CalendarDate
   endDate: CalendarDate
@@ -32,6 +34,13 @@ interface DatePickerModalContentBaseProps {
   disableSafeTop?: boolean
   saveLabelDisabled?: boolean
   uppercase?: boolean
+  themeValue: {
+    secondaryColor: string
+    primaryColor: string
+    accentColor: string
+    backgroundColor: string
+    fontFamily: string
+  }
 }
 
 export interface DatePickerModalContentRangeProps
@@ -84,6 +93,7 @@ export function DatePickerModalContent(
     dateMode,
     startYear,
     endYear,
+    themeValue,
   } = props
   const anyProps = props as any
 
@@ -136,8 +146,10 @@ export function DatePickerModalContent(
     setCollapsed((prev) => !prev)
   }, [setCollapsed])
 
+  const contextValue = themeValue
+
   return (
-    <>
+    <themeContext.Provider value={contextValue}>
       <DatePickerModalHeaderBackground>
         <DatePickerModalHeader
           locale={locale}
@@ -198,7 +210,7 @@ export function DatePickerModalContent(
           />
         }
       />
-    </>
+    </themeContext.Provider>
   )
 }
 
