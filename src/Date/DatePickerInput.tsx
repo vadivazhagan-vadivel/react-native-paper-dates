@@ -69,6 +69,13 @@ function DatePickerInput(
             uppercase={uppercase ?? true}
             startYear={startYear ?? 1800}
             endYear={endYear ?? 2200}
+            themeValue={{
+              secondaryColor: '#fff',
+              primaryColor: '#1060e0',
+              accentColor: '#070707',
+              backgroundColor: '#ECE9E1',
+              fontFamily: 'Roboto',
+            }}
           />
         ) : null
       }

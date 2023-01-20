@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { StyleSheet, View } from 'react-native'
-import { IconButton, useTheme } from 'react-native-paper'
+import { IconButton } from 'react-native-paper'
 import DayNames, { dayNamesHeight } from './DayNames'
 import type { DisableWeekDaysType } from './dateUtils'
 import { getTranslation } from '../translations/utils'

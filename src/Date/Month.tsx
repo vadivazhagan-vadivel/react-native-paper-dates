@@ -1,12 +1,6 @@
 import * as React from 'react'
 import { StyleSheet, View } from 'react-native'
-import {
-  IconButton,
-  Text,
-  useTheme,
-  TouchableRipple,
-  MD2Theme,
-} from 'react-native-paper'
+import { IconButton, Text, TouchableRipple } from 'react-native-paper'
 import Day, { EmptyDay } from './Day'
 
 import {

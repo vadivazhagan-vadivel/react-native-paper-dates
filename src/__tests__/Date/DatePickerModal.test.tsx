@@ -15,6 +15,13 @@ it('renders DatePickerModal', () => {
           onDismiss={() => null}
           date={new Date('01/01/2022')}
           onConfirm={() => null}
+          themeValue={{
+            secondaryColor: '#fff',
+            primaryColor: '#1060e0',
+            accentColor: '#070707',
+            backgroundColor: '#ECE9E1',
+            fontFamily: 'Roboto',
+          }}
         />
       </SafeAreaProvider>
     )
