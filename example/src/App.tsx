@@ -359,7 +359,7 @@ function App() {
       <TimePickerModal
         locale={locale}
         visible={timeOpen}
-        modal={false}
+        // modal={false}
         themeValue={{
           secondaryColor: '#fff',
           primaryColor: '#1060e0',
