@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders TimeInput 1`] = `
+<View
+  style={
+    {
+      "height": 80,
+      "position": "relative",
+      "width": 96,
+    }
+  }
+>
+  <TextInput
+    keyboardAppearance="default"
+    keyboardType="number-pad"
+    maxLength={2}
+    onBlur={[Function]}
+    onChangeText={[Function]}
+    onFocus={[Function]}
+    style={
+      [
+        {
+          "fontSize": 57,
+          "textAlign": "center",
+          "textAlignVertical": "center",
+          "width": 96,
+        },
+        {
+          "backgroundColor": "#ECE9E1",
+          "borderColor": "#070707",
+          "borderRadius": 8,
+          "borderWidth": 2,
+          "color": "#070707",
+          "fontFamily": "Roboto",
+          "height": 80,
+        },
+      ]
+    }
+    value="12"
+  />
+</View>
+`;
