@@ -359,6 +359,14 @@ function App() {
       <TimePickerModal
         locale={locale}
         visible={timeOpen}
+        modal={false}
+        themeValue={{
+          secondaryColor: '#fff',
+          primaryColor: '#1060e0',
+          accentColor: '#070707',
+          backgroundColor: '#ECE9E1',
+          fontFamily: 'Roboto',
+        }}
         onDismiss={onDismissTime}
         onConfirm={onConfirmTime}
         hours={time.hours} // optional, default: current hours

@@ -8,13 +8,9 @@ import {
 } from 'react-native'
 import { useTheme, TouchableRipple } from 'react-native-paper'
 
+import { themeContext } from '../Context/themeContext'
 import Color from 'color'
-import {
-  inputTypes,
-  PossibleClockTypes,
-  PossibleInputTypes,
-  useInputColors,
-} from './timeUtils'
+import { inputTypes, PossibleClockTypes, PossibleInputTypes } from './timeUtils'
 
 interface TimeInputProps
   extends Omit<Omit<TextInputProps, 'value'>, 'onFocus'> {
@@ -38,6 +34,7 @@ function TimeInput(
   }: TimeInputProps,
   ref: any
 ) {
+  const LocalTheme = React.useContext(themeContext)
   const [controlledValue, setControlledValue] = React.useState<string>(
     `${value}`
   )
@@ -58,7 +55,8 @@ function TimeInput(
 
   const highlighted = inputType === inputTypes.picker ? pressed : inputFocused
 
-  const { color, backgroundColor } = useInputColors(highlighted)
+  const color = LocalTheme.accentColor
+  const backgroundColor = LocalTheme.backgroundColor
 
   let formattedValue = controlledValue
   if (!inputFocused) {
@@ -79,12 +77,10 @@ function TimeInput(
             color,
             backgroundColor,
             borderRadius: theme.roundness * 2,
-            borderColor:
-              theme.isV3 && highlighted
-                ? theme.colors.onPrimaryContainer
-                : undefined,
+            borderColor: LocalTheme.accentColor,
             borderWidth: theme.isV3 && highlighted ? 2 : 0,
             height: inputType === inputTypes.keyboard ? 72 : 80,
+            fontFamily: LocalTheme.fontFamily,
           },
         ]}
         value={formattedValue}

@@ -5,6 +5,8 @@ import { circleSize } from './timeUtils'
 import { useTextColorOnPrimary } from '../utils'
 import { DisplayModeContext } from './TimePicker'
 
+import { themeContext } from '../Context/themeContext'
+
 function AnalogClockHours({
   is24Hour,
   hours,
@@ -16,6 +18,9 @@ function AnalogClockHours({
   const outerRange = getHourNumbers(false, circleSize, 12, 12)
   const innerRange = getHourNumbers(true, circleSize, 12, 12)
   const color = useTextColorOnPrimary()
+
+  const LocalTheme = React.useContext(themeContext)
+  const font = { fontFamily: LocalTheme.fontFamily }
 
   return (
     <>
@@ -34,7 +39,7 @@ function AnalogClockHours({
           <View style={styles.outerHourInner}>
             {/* Display 00 instead of 12 for AM hours */}
             <Text
-              style={hours === i + 1 ? { color } : null}
+              style={[hours === i + 1 ? { color } : null, font]}
               variant="bodyLarge"
               selectable={false}
             >
@@ -63,6 +68,7 @@ function AnalogClockHours({
                     i + 13 === hours || (i + 13 === 24 && hours === 0)
                       ? { color }
                       : null,
+                    font,
                   ]}
                   variant="bodyLarge"
                 >

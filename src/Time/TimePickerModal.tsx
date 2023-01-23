@@ -9,23 +9,17 @@ import {
   KeyboardAvoidingView,
 } from 'react-native'
 
-import {
-  Button,
-  IconButton,
-  MD2Theme,
-  overlay,
-  useTheme,
-} from 'react-native-paper'
+import { Button, useTheme } from 'react-native-paper'
 
 import TimePicker from './TimePicker'
 import {
   clockTypes,
-  getTimeInputTypeIcon,
   inputTypes,
   PossibleClockTypes,
   PossibleInputTypes,
-  reverseInputTypes,
 } from './timeUtils'
+
+import { themeContext } from '../Context/themeContext'
 
 const supportedOrientations: (
   | 'portrait'
@@ -49,12 +43,12 @@ export function TimePickerModal({
   minutes,
   label = 'Select time',
   uppercase = true,
+  modal = true,
   cancelLabel = 'Cancel',
   confirmLabel = 'Ok',
   animationType = 'none',
   locale,
-  keyboardIcon = 'keyboard-outline',
-  clockIcon = 'clock-outline',
+  themeValue,
 }: {
   locale?: undefined | string
   label?: string
@@ -64,26 +58,25 @@ export function TimePickerModal({
   hours?: number | undefined
   minutes?: number | undefined
   visible: boolean | undefined
+  modal?: boolean
   onDismiss: () => any
   onConfirm: (hoursAndMinutes: { hours: number; minutes: number }) => any
   animationType?: 'slide' | 'fade' | 'none'
   keyboardIcon?: string
   clockIcon?: string
+  themeValue: {
+    secondaryColor: string
+    primaryColor: string
+    accentColor: string
+    backgroundColor: string
+    fontFamily: string
+  }
 }) {
   const theme = useTheme()
 
-  let textFont
   let labelText = label
 
-  if (theme.isV3) {
-    textFont = theme.fonts.labelMedium
-  } else {
-    textFont = (theme as any as MD2Theme)?.fonts.medium
-  }
-
-  const [inputType, setInputType] = React.useState<PossibleInputTypes>(
-    inputTypes.picker
-  )
+  const [inputType] = React.useState<PossibleInputTypes>(inputTypes.picker)
   const [focused, setFocused] = React.useState<PossibleClockTypes>(
     clockTypes.hours
   )
@@ -123,107 +116,160 @@ export function TimePickerModal({
     },
     [setFocused, setLocalHours, setLocalMinutes]
   )
-  return (
-    <Modal
-      animationType={animationType}
-      transparent={true}
-      visible={visible}
-      onRequestClose={onDismiss}
-      presentationStyle="overFullScreen"
-      supportedOrientations={supportedOrientations}
-      statusBarTranslucent={true}
-    >
-      <>
-        <TouchableWithoutFeedback onPress={onDismiss}>
-          <View
-            style={[
-              StyleSheet.absoluteFill,
-              styles.modalBackground,
-              { backgroundColor: theme.colors?.backdrop },
-            ]}
-          />
-        </TouchableWithoutFeedback>
-        <View
-          style={[StyleSheet.absoluteFill, styles.modalRoot]}
-          pointerEvents="box-none"
+
+  const context = themeValue
+
+  let textFont = { fontFamily: context.fontFamily }
+
+  if (modal) {
+    return (
+      <themeContext.Provider value={context}>
+        <Modal
+          animationType={animationType}
+          transparent={true}
+          visible={visible}
+          onRequestClose={onDismiss}
+          presentationStyle="overFullScreen"
+          supportedOrientations={supportedOrientations}
+          statusBarTranslucent={true}
         >
-          <KeyboardAvoidingView
-            style={styles.keyboardView}
-            behavior={'padding'}
-          >
-            <Animated.View
-              style={[
-                styles.modalContent,
-                {
-                  backgroundColor:
-                    theme.dark && theme.isV3
-                      ? theme.colors.elevation.level3
-                      : theme.isV3
-                      ? theme.colors.surface
-                      : theme.dark
-                      ? overlay(10, theme.colors.surface)
-                      : theme.colors.surface,
-                  borderRadius: theme.isV3
-                    ? theme.roundness * 6
-                    : theme.roundness,
-                },
-              ]}
+          <>
+            <TouchableWithoutFeedback onPress={onDismiss}>
+              <View
+                style={[
+                  StyleSheet.absoluteFill,
+                  styles.modalBackground,
+                  { backgroundColor: theme.colors?.backdrop },
+                ]}
+              />
+            </TouchableWithoutFeedback>
+            <View
+              style={[StyleSheet.absoluteFill, styles.modalRoot]}
+              pointerEvents="box-none"
             >
-              <View style={styles.labelContainer}>
-                <Text
+              <KeyboardAvoidingView
+                style={styles.keyboardView}
+                behavior={'padding'}
+              >
+                <Animated.View
                   style={[
-                    styles.label,
+                    styles.modalContent,
                     {
-                      ...textFont,
-                      color: theme?.isV3
-                        ? theme.colors.onSurfaceVariant
-                        : (theme as any as MD2Theme).colors.text,
+                      backgroundColor: '#fff',
+                      borderRadius: theme.isV3
+                        ? theme.roundness * 6
+                        : theme.roundness,
                     },
                   ]}
                 >
-                  {uppercase ? labelText.toUpperCase() : labelText}
-                </Text>
-              </View>
-              <View style={styles.timePickerContainer}>
-                <TimePicker
-                  locale={locale}
-                  inputType={inputType}
-                  focused={focused}
-                  hours={localHours}
-                  minutes={localMinutes}
-                  onChange={onChange}
-                  onFocusInput={onFocusInput}
-                />
-              </View>
-              <View style={styles.bottom}>
-                <IconButton
-                  icon={getTimeInputTypeIcon(inputType, {
-                    keyboard: keyboardIcon,
-                    picker: clockIcon,
-                  })}
-                  onPress={() => setInputType(reverseInputTypes[inputType])}
-                  size={24}
-                  style={styles.inputTypeToggle}
-                  accessibilityLabel="toggle keyboard"
-                />
-                <View style={styles.fill} />
-                <Button onPress={onDismiss} uppercase={uppercase}>
-                  {cancelLabel}
-                </Button>
-                <Button
-                  onPress={() =>
-                    onConfirm({ hours: localHours, minutes: localMinutes })
-                  }
-                  uppercase={uppercase}
-                >
-                  {confirmLabel}
-                </Button>
-              </View>
-            </Animated.View>
-          </KeyboardAvoidingView>
+                  <View style={styles.labelContainer}>
+                    <Text
+                      style={[
+                        styles.label,
+                        {
+                          ...textFont,
+                          color: context.accentColor,
+                        },
+                      ]}
+                    >
+                      {uppercase ? labelText.toUpperCase() : labelText}
+                    </Text>
+                  </View>
+                  <View style={styles.timePickerContainer}>
+                    <TimePicker
+                      locale={locale}
+                      inputType={inputType}
+                      focused={focused}
+                      hours={localHours}
+                      minutes={localMinutes}
+                      onChange={onChange}
+                      onFocusInput={onFocusInput}
+                    />
+                  </View>
+                  <View style={styles.bottom}>
+                    <View style={styles.fill} />
+                    <Button
+                      onPress={onDismiss}
+                      uppercase={uppercase}
+                      textColor={context.accentColor}
+                    >
+                      {cancelLabel}
+                    </Button>
+                    <Button
+                      onPress={() =>
+                        onConfirm({ hours: localHours, minutes: localMinutes })
+                      }
+                      textColor={context.accentColor}
+                      uppercase={uppercase}
+                    >
+                      {confirmLabel}
+                    </Button>
+                  </View>
+                </Animated.View>
+              </KeyboardAvoidingView>
+            </View>
+          </>
+        </Modal>
+      </themeContext.Provider>
+    )
+  }
+
+  return (
+    <themeContext.Provider value={context}>
+      <Animated.View
+        style={[
+          styles.modalContent,
+          {
+            backgroundColor: '#fff',
+            borderRadius: theme.isV3 ? theme.roundness * 6 : theme.roundness,
+          },
+        ]}
+      >
+        <View style={styles.labelContainer}>
+          <Text
+            style={[
+              styles.label,
+              {
+                ...textFont,
+                color: context.accentColor,
+              },
+            ]}
+          >
+            {uppercase ? labelText.toUpperCase() : labelText}
+          </Text>
         </View>
-      </>
-    </Modal>
+        <View style={styles.timePickerContainer}>
+          <TimePicker
+            locale={locale}
+            inputType={inputType}
+            focused={focused}
+            hours={localHours}
+            minutes={localMinutes}
+            onChange={onChange}
+            onFocusInput={onFocusInput}
+          />
+        </View>
+        <View style={styles.bottom}>
+          <View style={styles.fill} />
+          <Button
+            onPress={onDismiss}
+            uppercase={uppercase}
+            textColor={context.accentColor}
+          >
+            {cancelLabel}
+          </Button>
+          <Button
+            onPress={() =>
+              onConfirm({ hours: localHours, minutes: localMinutes })
+            }
+            textColor={context.accentColor}
+            uppercase={uppercase}
+          >
+            {confirmLabel}
+          </Button>
+        </View>
+      </Animated.View>
+    </themeContext.Provider>
   )
 }
 
