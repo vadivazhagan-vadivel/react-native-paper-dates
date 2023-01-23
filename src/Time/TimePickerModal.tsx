@@ -218,10 +218,9 @@ export function TimePickerModal({
     <themeContext.Provider value={context}>
       <Animated.View
         style={[
-          styles.modalContent,
+          styles.content,
           {
             backgroundColor: '#fff',
-            borderRadius: theme.isV3 ? theme.roundness * 6 : theme.roundness,
           },
         ]}
       >
@@ -305,6 +304,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.34,
     shadowRadius: 6.27,
     elevation: 3,
+    minWidth: 287,
+    paddingVertical: 8,
+  },
+  content: {
     minWidth: 287,
     paddingVertical: 8,
   },
