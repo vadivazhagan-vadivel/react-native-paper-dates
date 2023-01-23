@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, StyleSheet, useWindowDimensions } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 
 import {
   inputTypes,
@@ -10,7 +10,6 @@ import {
 } from './timeUtils'
 
 import AnalogClock from './AnalogClock'
-import { circleSize } from './timeUtils'
 import TimeInputs from './TimeInputs'
 
 export const DisplayModeContext = React.createContext<{
@@ -48,8 +47,6 @@ function TimePicker({
   const [displayMode, setDisplayMode] = React.useState<'AM' | 'PM' | undefined>(
     undefined
   )
-  const dimensions = useWindowDimensions()
-  const isLandscape = dimensions.width > dimensions.height
 
   // method to check whether we have 24 hours in clock or 12
   const is24Hour = React.useMemo(() => {
@@ -84,24 +81,7 @@ function TimePicker({
     <DisplayModeContext.Provider
       value={{ mode: displayMode, setMode: setDisplayMode }}
     >
-      <View
-        style={
-          isLandscape
-            ? [
-                styles.rootLandscape,
-                {
-                  width:
-                    24 * 3 +
-                    96 * 2 +
-                    52 +
-                    (inputType === inputTypes.picker
-                      ? circleSize
-                      : -circleSize),
-                },
-              ]
-            : styles.rootPortrait
-        }
-      >
+      <View style={styles.rootPortrait}>
         <TimeInputs
           inputType={inputType}
           hours={hours}
