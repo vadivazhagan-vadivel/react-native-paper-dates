@@ -4,7 +4,6 @@ import { Text, useTheme } from 'react-native-paper'
 import type { ModeType } from './Calendar'
 import type { LocalState } from './DatePickerModalContent'
 import Color from 'color'
-import { getTranslation } from '../translations/utils'
 import { themeContext } from '../Context/themeContext'
 
 export interface HeaderPickProps {
@@ -29,48 +28,17 @@ export interface HeaderContentProps extends HeaderPickProps {
   locale: string | undefined
 }
 
-function getLabel(
-  locale: string | undefined,
-  mode: ModeType,
-  configuredLabel?: string
-) {
-  if (configuredLabel) {
-    return configuredLabel
-  }
-  if (mode === 'range') {
-    return getTranslation(locale, 'selectRange')
-  }
-  if (mode === 'multiple') {
-    return getTranslation(locale, 'selectMultiple')
-  }
-  if (mode === 'single') {
-    return getTranslation(locale, 'selectSingle')
-  }
-  return '...?'
-}
-
 export default function DatePickerModalContentHeader(
   props: HeaderContentProps
 ) {
-  const { mode, moreLabel, uppercase } = props
-  const label = getLabel(props.locale, props.mode, props.label)
+  const { mode, moreLabel } = props
 
   const LocalTheme = React.useContext(themeContext)
 
   const color = LocalTheme.secondaryColor
-  const labelColor = LocalTheme.secondaryColor
-
-  // adjust font
-  let textFont = {
-    fontFamily: LocalTheme.fontFamily,
-  }
-
   return (
     <View style={styles.header}>
       <View>
-        <Text style={[styles.label, { color: labelColor, ...textFont }]}>
-          {uppercase ? label.toUpperCase() : label}
-        </Text>
         <View style={styles.headerContentContainer}>
           {mode === 'range' ? (
             <HeaderContentRange {...props} color={color} />

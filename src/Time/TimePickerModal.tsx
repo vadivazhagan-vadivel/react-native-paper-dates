@@ -3,13 +3,12 @@ import {
   Modal,
   StyleSheet,
   View,
-  Text,
   Animated,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
 } from 'react-native'
 
-import { Button, useTheme } from 'react-native-paper'
+import { Button, useTheme, Appbar } from 'react-native-paper'
 
 import TimePicker from './TimePicker'
 import {
@@ -41,11 +40,8 @@ export function TimePickerModal({
   onConfirm,
   hours,
   minutes,
-  label = 'Select time',
   uppercase = true,
   modal = true,
-  cancelLabel = 'Cancel',
-  confirmLabel = 'Ok',
   animationType = 'none',
   locale,
   themeValue,
@@ -74,8 +70,6 @@ export function TimePickerModal({
 }) {
   const theme = useTheme()
 
-  let labelText = label
-
   const [inputType] = React.useState<PossibleInputTypes>(inputTypes.picker)
   const [focused, setFocused] = React.useState<PossibleClockTypes>(
     clockTypes.hours
@@ -84,10 +78,6 @@ export function TimePickerModal({
   const [localMinutes, setLocalMinutes] = React.useState<number>(
     getMinutes(minutes)
   )
-
-  if (inputType === inputTypes.keyboard && !label) {
-    labelText = 'Enter time'
-  }
 
   React.useEffect(() => {
     setLocalHours(getHours(hours))
@@ -118,8 +108,6 @@ export function TimePickerModal({
   )
 
   const context = themeValue
-
-  let textFont = { fontFamily: context.fontFamily }
 
   if (modal) {
     return (
@@ -162,19 +150,25 @@ export function TimePickerModal({
                     },
                   ]}
                 >
-                  <View style={styles.labelContainer}>
-                    <Text
-                      style={[
-                        styles.label,
-                        {
-                          ...textFont,
-                          color: context.accentColor,
-                        },
-                      ]}
+                  <Appbar style={styles.appbarHeader}>
+                    <Appbar.Action
+                      icon={'close'}
+                      onPress={onDismiss}
+                      color={context.accentColor}
+                      testID="react-native-paper-dates-close"
+                    />
+                    <Appbar.Content title={''} />
+                    <Button
+                      onPress={() =>
+                        onConfirm({ hours: localHours, minutes: localMinutes })
+                      }
+                      textColor={context.accentColor}
+                      uppercase={uppercase}
                     >
-                      {uppercase ? labelText.toUpperCase() : labelText}
-                    </Text>
-                  </View>
+                      SAVE
+                    </Button>
+                  </Appbar>
+
                   <View style={styles.timePickerContainer}>
                     <TimePicker
                       locale={locale}
@@ -186,25 +180,7 @@ export function TimePickerModal({
                       onFocusInput={onFocusInput}
                     />
                   </View>
-                  <View style={styles.bottom}>
-                    <View style={styles.fill} />
-                    <Button
-                      onPress={onDismiss}
-                      uppercase={uppercase}
-                      textColor={context.accentColor}
-                    >
-                      {cancelLabel}
-                    </Button>
-                    <Button
-                      onPress={() =>
-                        onConfirm({ hours: localHours, minutes: localMinutes })
-                      }
-                      textColor={context.accentColor}
-                      uppercase={uppercase}
-                    >
-                      {confirmLabel}
-                    </Button>
-                  </View>
+                  <View style={styles.bottom} />
                 </Animated.View>
               </KeyboardAvoidingView>
             </View>
@@ -218,25 +194,31 @@ export function TimePickerModal({
     <themeContext.Provider value={context}>
       <Animated.View
         style={[
-          styles.content,
+          styles.modalContent,
           {
             backgroundColor: '#fff',
           },
         ]}
       >
-        <View style={styles.labelContainer}>
-          <Text
-            style={[
-              styles.label,
-              {
-                ...textFont,
-                color: context.accentColor,
-              },
-            ]}
+        <Appbar style={styles.appbarHeader}>
+          <Appbar.Action
+            icon={'close'}
+            onPress={onDismiss}
+            color={context.accentColor}
+            testID="react-native-paper-dates-close"
+          />
+          <Appbar.Content title={''} />
+          <Button
+            onPress={() =>
+              onConfirm({ hours: localHours, minutes: localMinutes })
+            }
+            textColor={context.accentColor}
+            uppercase={uppercase}
           >
-            {uppercase ? labelText.toUpperCase() : labelText}
-          </Text>
-        </View>
+            SAVE
+          </Button>
+        </Appbar>
+
         <View style={styles.timePickerContainer}>
           <TimePicker
             locale={locale}
@@ -248,25 +230,7 @@ export function TimePickerModal({
             onFocusInput={onFocusInput}
           />
         </View>
-        <View style={styles.bottom}>
-          <View style={styles.fill} />
-          <Button
-            onPress={onDismiss}
-            uppercase={uppercase}
-            textColor={context.accentColor}
-          >
-            {cancelLabel}
-          </Button>
-          <Button
-            onPress={() =>
-              onConfirm({ hours: localHours, minutes: localMinutes })
-            }
-            textColor={context.accentColor}
-            uppercase={uppercase}
-          >
-            {confirmLabel}
-          </Button>
-        </View>
+        <View style={styles.bottom} />
       </Animated.View>
     </themeContext.Provider>
   )
@@ -320,6 +284,10 @@ const styles = StyleSheet.create({
   label: {
     letterSpacing: 1,
     fontSize: 13,
+  },
+  appbarHeader: {
+    elevation: 0,
+    backgroundColor: 'transparent',
   },
   timePickerContainer: {
     paddingLeft: 24,
