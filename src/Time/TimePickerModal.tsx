@@ -194,7 +194,7 @@ export function TimePickerModal({
     <themeContext.Provider value={context}>
       <Animated.View
         style={[
-          styles.content,
+          styles.modalContent,
           {
             backgroundColor: '#fff',
           },
