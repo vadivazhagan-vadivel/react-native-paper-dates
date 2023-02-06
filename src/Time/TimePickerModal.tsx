@@ -146,18 +146,7 @@ export function TimePickerModal({
                 style={styles.keyboardView}
                 behavior={'padding'}
               >
-                <Animated.View
-                  style={[
-                    styles.modalContent,
-                    {
-                      backgroundColor: '#fff',
-                      borderRadius: theme.isV3
-                        ? theme.roundness * 6
-                        : theme.roundness,
-                    },
-                    containerStyle,
-                  ]}
-                >
+                <Animated.View style={[styles.modalContent, containerStyle]}>
                   <View style={styles.timePickerContainer}>
                     <TimePicker
                       locale={locale}
@@ -180,15 +169,7 @@ export function TimePickerModal({
 
   return (
     <themeContext.Provider value={context}>
-      <Animated.View
-        style={[
-          styles.modalContent,
-          {
-            backgroundColor: '#fff',
-          },
-          containerStyle,
-        ]}
-      >
+      <Animated.View style={[containerStyle]}>
         <View style={styles.timePickerContainer}>
           <TimePicker
             locale={locale}
