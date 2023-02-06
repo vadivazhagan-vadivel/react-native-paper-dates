@@ -19,7 +19,6 @@ export default function YearPicker({
   startYear: number
   endYear: number
 }) {
-  const theme = useTheme()
   const flatList = React.useRef<FlatList<number> | null>(null)
   const years = range(
     isNaN(startYear) ? 1800 : startYear,
@@ -42,7 +41,7 @@ export default function YearPicker({
       style={[
         StyleSheet.absoluteFill,
         styles.root,
-        { backgroundColor: theme.colors.surface },
+        { backgroundColor: '#fff' },
         selectingYear ? styles.opacity1 : styles.opacity0,
       ]}
       pointerEvents={selectingYear ? 'auto' : 'none'}
