@@ -6,9 +6,11 @@ import {
   Animated,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
+  ViewStyle,
+  StyleProp,
 } from 'react-native'
 
-import { Button, useTheme, Appbar } from 'react-native-paper'
+import { useTheme } from 'react-native-paper'
 
 import TimePicker from './TimePicker'
 import {
@@ -37,14 +39,16 @@ const supportedOrientations: (
 export function TimePickerModal({
   visible,
   onDismiss,
-  onConfirm,
+  // onConfirm,
   hours,
   minutes,
-  uppercase = true,
+  // uppercase = true,
   modal = true,
   animationType = 'none',
   locale,
+  onChange,
   themeValue,
+  containerStyle,
 }: {
   locale?: undefined | string
   label?: string
@@ -55,11 +59,13 @@ export function TimePickerModal({
   minutes?: number | undefined
   visible: boolean | undefined
   modal?: boolean
-  onDismiss: () => any
-  onConfirm: (hoursAndMinutes: { hours: number; minutes: number }) => any
+  onDismiss?: () => any
+  onConfirm?: (hoursAndMinutes: { hours: number; minutes: number }) => any
+  onChange?: (hoursAndMinutes: { hours: number; minutes: number }) => any
   animationType?: 'slide' | 'fade' | 'none'
   keyboardIcon?: string
   clockIcon?: string
+  containerStyle?: StyleProp<ViewStyle>
   themeValue: {
     secondaryColor: string
     primaryColor: string
@@ -91,7 +97,7 @@ export function TimePickerModal({
     (type: PossibleClockTypes) => setFocused(type),
     []
   )
-  const onChange = React.useCallback(
+  const onInnerChange = React.useCallback(
     (params: {
       focused?: PossibleClockTypes | undefined
       hours: number
@@ -103,8 +109,9 @@ export function TimePickerModal({
 
       setLocalHours(params.hours)
       setLocalMinutes(params.minutes)
+      onChange && onChange({ hours: params.hours, minutes: params.minutes })
     },
-    [setFocused, setLocalHours, setLocalMinutes]
+    [onChange]
   )
 
   const context = themeValue
@@ -148,27 +155,9 @@ export function TimePickerModal({
                         ? theme.roundness * 6
                         : theme.roundness,
                     },
+                    containerStyle,
                   ]}
                 >
-                  <Appbar style={styles.appbarHeader}>
-                    <Appbar.Action
-                      icon={'close'}
-                      onPress={onDismiss}
-                      color={context.accentColor}
-                      testID="react-native-paper-dates-close"
-                    />
-                    <Appbar.Content title={''} />
-                    <Button
-                      onPress={() =>
-                        onConfirm({ hours: localHours, minutes: localMinutes })
-                      }
-                      textColor={context.accentColor}
-                      uppercase={uppercase}
-                    >
-                      SAVE
-                    </Button>
-                  </Appbar>
-
                   <View style={styles.timePickerContainer}>
                     <TimePicker
                       locale={locale}
@@ -176,11 +165,10 @@ export function TimePickerModal({
                       focused={focused}
                       hours={localHours}
                       minutes={localMinutes}
-                      onChange={onChange}
+                      onChange={onInnerChange}
                       onFocusInput={onFocusInput}
                     />
                   </View>
-                  <View style={styles.bottom} />
                 </Animated.View>
               </KeyboardAvoidingView>
             </View>
@@ -198,27 +186,9 @@ export function TimePickerModal({
           {
             backgroundColor: '#fff',
           },
+          containerStyle,
         ]}
       >
-        <Appbar style={styles.appbarHeader}>
-          <Appbar.Action
-            icon={'close'}
-            onPress={onDismiss}
-            color={context.accentColor}
-            testID="react-native-paper-dates-close"
-          />
-          <Appbar.Content title={''} />
-          <Button
-            onPress={() =>
-              onConfirm({ hours: localHours, minutes: localMinutes })
-            }
-            textColor={context.accentColor}
-            uppercase={uppercase}
-          >
-            SAVE
-          </Button>
-        </Appbar>
-
         <View style={styles.timePickerContainer}>
           <TimePicker
             locale={locale}
@@ -226,7 +196,7 @@ export function TimePickerModal({
             focused={focused}
             hours={localHours}
             minutes={localMinutes}
-            onChange={onChange}
+            onChange={onInnerChange}
             onFocusInput={onFocusInput}
           />
         </View>
